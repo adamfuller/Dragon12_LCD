@@ -131,7 +131,7 @@ void switchLine(void){
  * 
  */
 void resetCursor(void){
-  put2LCD(0x02, CMD); 
+  putCMD2LCD(0x80); 
 }
 
 /**
