@@ -15,6 +15,15 @@ int __ticksToSwitch = CALLS_HIGH;
 int __msCount = 0;
 int __callEverymS = 0;
 
+// Split up the calls so the offset is more even
+int __callCounts[5] = {5, 1, 4, 2, 4};
+unsigned char __callIndex = 0;
+const unsigned char __callLength = 5;
+// Interrupts per call
+int __interruptCounts[5] = {8, 7, 8, 7, 8};
+unsigned char __interruptIndex = 0;
+
+
 void interrupt VectorNumber_Vrti IRQ_ISR(void);
 void initIterrupt(int ms, void (*func) (void));
 void (*__tempFunction)(void);

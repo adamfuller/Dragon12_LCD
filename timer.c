@@ -28,7 +28,7 @@ void interrupt VectorNumber_Vrti IRQ_ISR(void){
     // Call the function if the tick count is how many are needed
     __interruptCount++;
 
-    if (__interruptCount == __interruptsNeeded){
+    if (__interruptCount == __interruptCounts[__interruptIndex]){
         // Increment the milliseconds count
         __msCount++;
         // Increment the call count
@@ -40,19 +40,21 @@ void interrupt VectorNumber_Vrti IRQ_ISR(void){
         if ( !(__msCount %= __callEverymS) ){
             
             // Call the function if it isn't null
-            if (__tempFunction)
+            if (__tempFunction){
                 (*__tempFunction)();
+            }
         }
 
         // Switch between high and low ticks when needed
         // Also resets the tickCount in the process
         if ( !(__tickCount %= __ticksToSwitch) ){
-            if (__tickCount == CALLS_HIGH){
-                __interruptsNeeded = INTERRUPTS_LOW;
-                __ticksToSwitch = CALLS_LOW;   
-            } else {
-                __interruptsNeeded = INTERRUPTS_HIGH;
-                __ticksToSwitch = CALLS_HIGH;   
+            // Tick up the index for the interrupt count per ms
+            if (__tickCount == __callCounts[__callIndex]){
+                __interruptIndex = (__interruptIndex + 1) % __callLength;
+                __callIndex = (__callIndex + 1) % __callLength;
+                // Change how many times the interrupt 
+                // is called before ticking up the count
+                __ticksToSwitch = __callCounts[__callIndex];
             }
         }
     }
